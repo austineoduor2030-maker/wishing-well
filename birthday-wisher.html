@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff5fa;--bg2:#ffd6ea;--ink:#5a1740;--main:#ff4f9a}
+*{box-sizing:inherit}html,body{margin:0;min-height:100%;font-family:'Baloo 2',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg),var(--bg2));background-attachment:fixed}
+body.boy{--bg:#eef7ff;--bg2:#b9dcff;--ink:#0f2d57;--main:#1e7bff}
+.wrap{max-width:460px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{text-align:center;font-size:2rem;margin:10px 0 4px}
+.sub{text-align:center;margin:0 0 16px;opacity:.8}
+.card{background:#fff;border-radius:24px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+label{display:block;font-weight:800;margin:12px 0 6px}
+input,textarea{width:100%;padding:12px 14px;border-radius:14px;border:2px solid var(--bg2);font:inherit;font-size:1rem;background:#fff;color:#222}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{padding:12px 8px;border-radius:14px;border:2px solid var(--bg2);background:#fff;font:inherit;font-weight:800;cursor:pointer;color:#333}
+.opt.on{background:var(--main);border-color:var(--main);color:#fff}
+.btn{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:16px;font:inherit;font-size:1.1rem;font-weight:800;color:#fff;background:var(--main);cursor:pointer}
+.btn.alt{background:#25d366}.btn.ghost{background:#fff;color:var(--main);border:2px solid var(--main)}
+.hide{display:none!important}
+.small{font-size:.85rem;opacity:.7;margin-top:6px}
+#deco{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#deco span{position:absolute;opacity:.28;animation:sway 6s ease-in-out infinite}
+@keyframes sway{50%{transform:translateY(-14px) rotate(10deg)}}
+#deco .drive{opacity:1;bottom:14px;left:0;font-size:3.4rem;animation:drive 12s linear infinite}
+@keyframes drive{from{transform:translateX(110vw)}to{transform:translateX(-25vw)}}
+#deco .road{position:absolute;left:0;right:0;bottom:0;height:12px;background:repeating-linear-gradient(90deg,#4a5a70 0 28px,#8ea0b8 28px 40px);opacity:.35}
+#rcv{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;position:relative;z-index:1;overflow:hidden}
+#rcv h2{font-size:2.5rem;margin:8px 0;color:var(--main);line-height:1.1}
+#rcv p{font-size:1.15rem;max-width:380px;margin:6px 0}
+.big{font-size:5.5rem;line-height:1;animation:bob 2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-12px)}}
+.fall{position:fixed;top:-40px;pointer-events:none;animation:fall linear forwards;z-index:5}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.rise{position:fixed;bottom:-60px;pointer-events:none;animation:rise linear forwards;z-index:1;font-size:2.4rem}
+@keyframes rise{to{transform:translateY(-115vh)}}
+.back{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:12px;z-index:20;border:0;border-radius:12px;padding:8px 12px;background:#fff;font:inherit;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+</style></head>
+<body>
+<div id="deco"></div>
+<div id="sender" class="wrap">
+  <h1>🎂 Birthday Surprise</h1>
+  <p class="sub">Personalise it and send it on WhatsApp</p>
+  <div class="card">
+    <label>Who is it for?</label>
+    <div class="opts" id="gender">
+      <button class="opt on" data-v="girl">👧 Girl</button><button class="opt" data-v="boy">👦 Boy</button>
+    </div>
+    <label for="name">Their name</label><input id="name" placeholder="e.g. Amina">
+    <label for="msg">Your message (optional)</label><textarea id="msg" rows="2" placeholder="Write something sweet..."></textarea>
+    <label for="from">Your name</label><input id="from" placeholder="From...">
+    <label for="phone">Their WhatsApp number</label><input id="phone" type="tel" inputmode="tel" placeholder="2547XXXXXXXX (with country code)">
+    <button class="btn ghost" id="prev">👀 Preview</button>
+    <button class="btn alt" id="send">Send on WhatsApp 💬</button>
+    <button class="btn ghost" id="copy">🔗 Copy link instead</button>
+    <p class="small" id="note"></p>
+  </div>
+</div>
+<div id="rcv" class="hide"></div>
+<button class="back hide" id="back">← Back</button>
+<script>
+const $=id=>document.getElementById(id);
+let G='girl',lastG='';
+function deco(g){if(g===lastG)return;lastG=g;const box=$('deco');box.innerHTML='';
+ const items=g==='boy'?['🚗','🏎️','🚙','🚚','🏍️','✈️','🚁','🚜','🚓','🚀','🚒','🛵']:['👜','👠','💄','🌹','🦋','🧁','💍','🌷','🎀','👗','💅','🌸','🪞','🧴','👑','💐'];
+ for(let i=0;i<22;i++){const s=document.createElement('span');s.textContent=items[i%items.length];s.style.left=(Math.random()*92)+'vw';s.style.top=(Math.random()*80)+'vh';s.style.fontSize=(28+Math.random()*30)+'px';s.style.animationDelay=(-Math.random()*6)+'s';s.style.animationDuration=(5+Math.random()*4)+'s';box.appendChild(s)}
+ if(g==='boy'){const r=document.createElement('div');r.className='road';box.appendChild(r);['🚗','🏎️','🚚'].forEach((v,i)=>{const d=document.createElement('span');d.className='drive';d.textContent=v;d.style.animationDelay=(-i*4)+'s';box.appendChild(d)})}}
+function theme(g){document.body.className=g==='boy'?'boy':'';deco(g)}
+document.querySelectorAll('#gender .opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('#gender .opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');G=b.dataset.v;theme(G)});
+theme(G);
+const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const dec=s=>JSON.parse(decodeURIComponent(escape(atob(s))));
+function data(){return{g:G,n:$('name').value.trim()||'Friend',m:$('msg').value.trim(),f:$('from').value.trim()}}
+function link(){return location.href.split('#')[0]+'#'+enc(data())}
+$('send').onclick=()=>{const num=$('phone').value.replace(/\D/g,'');if(!num){$('note').textContent='Add their WhatsApp number first 🙂';return}
+ window.open('https://wa.me/'+num+'?text='+encodeURIComponent('🎂 A birthday surprise for you, '+data().n+'! Open this 👇\n'+link()),'_blank')};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(link());$('note').textContent='Link copied! Paste it anywhere 💕'}catch(e){$('note').textContent=link()}};
+$('prev').onclick=()=>{history.replaceState(null,'','#'+enc(data()));show(data(),true)};
+$('back').onclick=()=>{history.replaceState(null,'',location.pathname+location.search);$('rcv').classList.add('hide');$('back').classList.add('hide');$('sender').classList.remove('hide');theme(G);document.querySelectorAll('.fall,.rise').forEach(e=>e.remove())};
+function rain(list,n,cls,dur){for(let i=0;i<n;i++){const e=document.createElement('div');e.className=cls;e.textContent=list[i%list.length];e.style.left=Math.random()*100+'vw';e.style.fontSize=(18+Math.random()*22)+'px';e.style.animationDuration=(dur+Math.random()*dur)+'s';e.style.animationDelay=Math.random()*2+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),(dur*2+3)*1000)}}
+const GIRL=['🌸','💖','🦄','🎀','🧸','✨','🍭','🌈'],BOY=['⭐','🚀','⚽','🦖','🎮','🏎️','🔥','🎈'];
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function show(d,preview){
+ theme(d.g);const boy=d.g==='boy',r=$('rcv');
+ $('sender').classList.add('hide');r.classList.remove('hide');$('back').classList.toggle('hide',!preview);
+ r.innerHTML=`<div class="big">${boy?'🎂':'🧁'}</div><h2>Happy Birthday, ${esc(d.n)}!</h2><p>${boy?'Hope your day is epic, champ! 🚀':'Hope your day is magical and full of sparkles! ✨'}</p>${d.m?`<p>“${esc(d.m)}”</p>`:''}${d.f?`<p>— with love, ${esc(d.f)} ${boy?'🤜':'💕'}</p>`:''}`;
+ rain(boy?BOY:GIRL,14,'rise',7);
+ setTimeout(()=>rain(['🎉','🎊','✨','💥','⭐'],30,'fall',3),400);
+}
+if(location.hash.length>2){try{show(dec(location.hash.slice(1)),false)}catch(e){}}
+</script></body></html>
