@@ -405,15 +405,22 @@ $('send').onclick = () => {
   const shareLink = link();
 
   if (shareLink.length > 18000) {
-    $('note').textContent = 'The link is too large to share reliably. Remove some photos or use online photo storage.';
+    $('note').textContent =
+      'The link is too large. Remove some photos and try again.';
     return;
   }
 
-  window.open(
+  const message =
+    '🎂 A birthday surprise for you, ' +
+    data().n +
+    '! Open this 👇\n' +
+    shareLink;
+
+  const whatsappUrl =
     'https://wa.me/' + num + '?text=' +
-    encodeURIComponent('🎂 A birthday surprise for you, ' + data().n + '! Open this 👇\n' + shareLink),
-    '_blank'
-  );
+    encodeURIComponent(message);
+
+  window.location.href = whatsappUrl;
 };
 
 /* Copy link */
