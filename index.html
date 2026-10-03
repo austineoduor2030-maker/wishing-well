@@ -15,6 +15,7 @@
   --bg2: #ffd6ea;
   --ink: #5a1740;
   --main: #ff4f9a;
+  --p: 0;
 }
 * { box-sizing: inherit; }
 html, body {
@@ -25,187 +26,107 @@ html, body {
   background: linear-gradient(160deg, var(--bg), var(--bg2));
   background-attachment: fixed;
 }
-body.boy {
-  --bg: #eef7ff;
-  --bg2: #b9dcff;
-  --ink: #0f2d57;
-  --main: #1e7bff;
-}
-.wrap {
-  max-width: 460px;
-  margin: 0 auto;
-  padding: 20px;
-  position: relative;
-  z-index: 1;
-}
+body.boy { --bg: #eef7ff; --bg2: #b9dcff; --ink: #0f2d57; --main: #1e7bff; }
+.wrap { max-width: 460px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
 h1 { text-align: center; font-size: 2rem; margin: 10px 0 4px; }
 .sub { text-align: center; margin: 0 0 16px; opacity: .8; }
-.card {
-  background: #fff;
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
-}
+.card { background: #fff; border-radius: 24px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
 label { display: block; font-weight: 800; margin: 12px 0 6px; }
-input, textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 2px solid var(--bg2);
-  font: inherit;
-  font-size: 1rem;
-  background: #fff;
-  color: #222;
+input, textarea, select {
+  width: 100%; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--bg2);
+  font: inherit; font-size: 1rem; background: #fff; color: #222;
 }
 .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .opt {
-  padding: 12px 8px;
-  border-radius: 14px;
-  border: 2px solid var(--bg2);
-  background: #fff;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-  color: #333;
+  padding: 12px 8px; border-radius: 14px; border: 2px solid var(--bg2); background: #fff;
+  font: inherit; font-weight: 800; cursor: pointer; color: #333;
 }
 .opt.on { background: var(--main); border-color: var(--main); color: #fff; }
 .btn {
-  display: block;
-  width: 100%;
-  margin-top: 14px;
-  padding: 14px;
-  border: 0;
-  border-radius: 16px;
-  font: inherit;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #fff;
-  background: var(--main);
-  cursor: pointer;
+  display: block; width: 100%; margin-top: 14px; padding: 14px; border: 0; border-radius: 16px;
+  font: inherit; font-size: 1.1rem; font-weight: 800; color: #fff; background: var(--main); cursor: pointer;
 }
 .btn.alt { background: #25d366; }
 .btn.ghost { background: #fff; color: var(--main); border: 2px solid var(--main); }
+.btn:disabled { opacity: .6; }
 .hide { display: none !important; }
 .small { font-size: .85rem; opacity: .7; margin-top: 6px; }
 
 /* Photo uploader preview */
-.photo-gallery {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
-}
+.photo-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
 .photo-item { position: relative; min-width: 0; }
-.photo-item img {
-  display: block;
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 12px;
-}
+.photo-item img { display: block; width: 100%; height: 140px; object-fit: cover; border-radius: 12px; }
 .remove-photo {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  border: 0;
-  border-radius: 50%;
-  background: #fff;
-  color: #c00;
-  font-size: 18px;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
+  position: absolute; top: 5px; right: 5px; border: 0; border-radius: 50%;
+  background: #fff; color: #c00; font-size: 18px; cursor: pointer; width: 30px; height: 30px;
 }
 
-/* Recipient's memories gallery */
-.memory-gallery {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  width: 100%;
-  max-width: 440px;
-  margin: 20px auto;
-}
-.memory-gallery img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
-}
-
-#deco { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+#deco { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; transform: scale(calc(1 + var(--p) * .04)); }
 #deco span { position: absolute; opacity: .28; animation: sway 6s ease-in-out infinite; }
 @keyframes sway { 50% { transform: translateY(-14px) rotate(10deg); } }
-#deco .drive {
-  opacity: 1;
-  bottom: 14px;
-  left: 0;
-  font-size: 3.4rem;
-  animation: drive 12s linear infinite;
-}
-@keyframes drive {
-  from { transform: translateX(110vw); }
-  to { transform: translateX(-25vw); }
-}
+#deco .drive { opacity: 1; bottom: 14px; left: 0; font-size: 3.4rem; animation: drive 12s linear infinite; }
+@keyframes drive { from { transform: translateX(110vw); } to { transform: translateX(-25vw); } }
 #deco .road {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 12px;
-  background: repeating-linear-gradient(90deg,#4a5a70 0 28px,#8ea0b8 28px 40px);
-  opacity: .35;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 12px;
+  background: repeating-linear-gradient(90deg,#4a5a70 0 28px,#8ea0b8 28px 40px); opacity: .35;
 }
 #rcv {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px; position: relative; z-index: 1; overflow: hidden;
 }
-#rcv h2 { font-size: 2.5rem; margin: 8px 0; color: var(--main); line-height: 1.1; }
+#rcv h2 { font-size: 2.5rem; margin: 8px 0; color: var(--main); line-height: 1.1; text-shadow: 0 0 calc(var(--p) * 26px) var(--main); }
 #rcv p { font-size: 1.15rem; max-width: 380px; margin: 6px 0; }
-.big {
-  font-size: 5.5rem;
-  line-height: 1;
-  animation: bob 2s ease-in-out infinite;
-}
+.big { font-size: 5.5rem; line-height: 1; animation: bob 2s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateY(-12px); } }
-.fall {
-  position: fixed;
-  top: -40px;
-  pointer-events: none;
-  animation: fall linear forwards;
-  z-index: 5;
-}
+.fall { position: fixed; top: -40px; pointer-events: none; animation: fall linear forwards; z-index: 5; }
 @keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
-.rise {
-  position: fixed;
-  bottom: -60px;
-  pointer-events: none;
-  animation: rise linear forwards;
-  z-index: 1;
-  font-size: 2.4rem;
-}
+.rise { position: fixed; bottom: -60px; pointer-events: none; animation: rise linear forwards; z-index: 1; font-size: 2.4rem; }
 @keyframes rise { to { transform: translateY(-115vh); } }
+.pop { position: fixed; pointer-events: none; z-index: 28; animation: pop 1.7s ease-out forwards; }
+@keyframes pop { from { transform: translateY(0) scale(.5); opacity: 1; } to { transform: translateY(-45vh) scale(1.5) rotate(40deg); opacity: 0; } }
 .back {
-  position: fixed;
-  top: calc(10px + env(safe-area-inset-top,0px));
-  left: 12px;
-  z-index: 20;
-  border: 0;
-  border-radius: 12px;
-  padding: 8px 12px;
-  background: #fff;
-  font: inherit;
-  font-weight: 800;
+  position: fixed; top: calc(10px + env(safe-area-inset-top,0px)); left: 12px; z-index: 40;
+  border: 0; border-radius: 12px; padding: 8px 12px; background: #fff; font: inherit; font-weight: 800;
   box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+/* Slideshow */
+.gate {
+  position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 24px;
+  background: linear-gradient(160deg,var(--bg),var(--bg2));
+}
+.gate .big { font-size: 6rem; }
+.stage { position: fixed; inset: 0; background: #000; z-index: 25; overflow: hidden; }
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+.slide.on { opacity: 1; }
+.slide .bg {
+  position: absolute; inset: -30px; background-size: cover; background-position: center;
+  filter: blur(26px) brightness(calc(.5 + var(--p) * .3));
+}
+.slide .pz { position: absolute; inset: 0; transform: scale(calc(1 + var(--p) * .05)); }
+.slide img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  animation-duration: var(--d,9s); animation-timing-function: ease-out; animation-fill-mode: forwards; border-radius: 12px;
+}
+.flash { position: absolute; inset: 0; background: #fff; opacity: calc(var(--p) * .16); pointer-events: none; z-index: 2; }
+.kb0{animation-name:kb0}.kb1{animation-name:kb1}.kb2{animation-name:kb2}.kb3{animation-name:kb3}
+@keyframes kb0{from{transform:scale(1)}to{transform:scale(1.12)}}
+@keyframes kb1{from{transform:scale(1.12) translateX(-2%)}to{transform:scale(1) translateX(2%)}}
+@keyframes kb2{from{transform:scale(.9) rotate(-2deg);opacity:.2}to{transform:scale(1) rotate(0)}}
+@keyframes kb3{from{transform:scale(1.1) translateY(3%)}to{transform:scale(1) translateY(-2%)}}
+.cap {
+  position: absolute; left: 0; right: 0; bottom: calc(28px + env(safe-area-inset-bottom,0px));
+  text-align: center; color: #fff; font-weight: 800; font-size: 1.3rem; text-shadow: 0 2px 10px #000; z-index: 3;
+}
+.bar {
+  position: absolute; top: calc(8px + env(safe-area-inset-top,0px)); left: 10px; right: 10px; height: 4px;
+  background: rgba(255,255,255,.3); border-radius: 4px; z-index: 3; overflow: hidden;
+}
+.bar i { display: block; height: 100%; width: 0; background: #fff; transition: width .6s ease; }
+.ctrl {
+  position: absolute; top: calc(20px + env(safe-area-inset-top,0px)); right: 12px; z-index: 4;
+  border: 0; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; background: rgba(255,255,255,.85);
 }
 </style>
 </head>
@@ -224,10 +145,16 @@ input, textarea {
       <button class="opt" data-v="boy">👦 Boy</button>
     </div>
 
-    <label for="photos">📸 Add memory pictures</label>
+    <label for="photos">📸 Add memory pictures (unlimited)</label>
     <input id="photos" type="file" accept="image/*" multiple>
-    <p class="small">Select as many pictures as you like.</p>
+    <p class="small">Pictures play as a slideshow in the order shown below.</p>
     <div id="photo-preview" class="photo-gallery"></div>
+
+    <label for="song">🎵 Choose a song</label>
+    <select id="song"></select>
+    <input id="songFile" type="file" accept="audio/*" style="display:none;margin-top:8px">
+    <p class="small">Pick a preset, or choose "Upload my own song". Keep it under 10 MB.</p>
+    <audio id="songPrev" controls style="width:100%;margin-top:8px"></audio>
 
     <label for="name">Their name</label>
     <input id="name" placeholder="e.g. Amina">
@@ -239,7 +166,7 @@ input, textarea {
     <input id="from" placeholder="From...">
 
     <label for="phone">Their WhatsApp number</label>
-    <input id="phone" type="tel" inputmode="tel" placeholder="2547XXXXXXXX (with country code)">
+    <input id="phone" type="tel" inputmode="tel" placeholder="0712345678 or 254712345678">
 
     <button class="btn ghost" id="prev">👀 Preview</button>
     <button class="btn alt" id="send">Send on WhatsApp 💬</button>
@@ -252,87 +179,238 @@ input, textarea {
 <button class="back hide" id="back">← Back</button>
 
 <script>
+/* ===== CONFIG: fill these in ===== */
+const CLOUD  = 'YOUR_CLOUD_NAME';
+const PRESET = 'YOUR_UNSIGNED_PRESET';
+const SONGS = [
+  { name: 'Song 1', src: 'https://YOUR-ONLINE-LINK/song1.mp3', bpm: 120 },
+  { name: 'Song 2', src: 'https://YOUR-ONLINE-LINK/song2.mp3', bpm: 100 },
+  { name: 'Song 3', src: 'https://YOUR-ONLINE-LINK/song3.mp3', bpm: 128 }
+];
+const BEATS_PER_SLIDE = 8;   // slide changes after this many beats
+const MIN_MS = 3500;         // but never faster than this
+const MAX_MS = 9000;         // and never slower than this
+/* ================================= */
+
 const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 let G = 'girl', lastG = '';
-let photos = [];
+let photos = [];          // { blob, url }
+let customSong = null;    // { file, url }
+let runToken = 0;         // cancels a running slideshow
 
-/* Upload, resize and compress pictures */
-$('photos').addEventListener('change', async event => {
-  const files = Array.from(event.target.files);
+/* ---------- Beat engine ---------- */
+let audio = new Audio();
+let ac = null, an = null, gainN = null, data = null;
+let engineOn = false, muted = false;
+let pulse = 0, lastBeat = 0, lastSound = 0, curBpm = 120;
+let hist = [];
+const beat = { n: 0 };
 
-  for (const file of files) {
-    if (!file.type.startsWith('image/')) continue;
+const songSrc = d => d.a || (SONGS[d.s] || SONGS[0]).src;
+const songBpm = d => (SONGS[d.s] && SONGS[d.s].bpm) || 120;
 
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
+function applyMute() {
+  if (gainN) gainN.gain.value = muted ? 0 : 1;
+  else audio.muted = muted;
+}
 
-      reader.onload = () => {
-        const img = new Image();
+function playSong(src, bpm) {
+  stopSong();
+  curBpm = bpm || 120;
+  hist = []; beat.n = 0; lastBeat = 0;
+  lastSound = performance.now();
 
-        img.onload = () => {
-          const scale = Math.min(1, 900 / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', 0.65));
-        };
+  const el = new Audio();
+  el.loop = true;
+  el.crossOrigin = 'anonymous';   // needed so the analyser can read the song
+  audio = el; an = null; gainN = null;
 
-        img.onerror = reject;
-        img.src = reader.result;
-      };
+  let fell = false;
+  el.onerror = () => {
+    // host blocks CORS: play normally, animation uses steady tempo
+    if (fell) return; fell = true;
+    const p = new Audio();
+    p.loop = true; p.src = src; p.muted = muted;
+    audio = p; an = null; gainN = null;
+    p.play().catch(() => {});
+  };
 
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    ac.resume();
+    const s = ac.createMediaElementSource(el);
+    an = ac.createAnalyser();
+    an.fftSize = 512;
+    an.smoothingTimeConstant = 0.6;
+    gainN = ac.createGain();
+    gainN.gain.value = muted ? 0 : 1;
+    s.connect(an); an.connect(gainN); gainN.connect(ac.destination);
+    data = new Uint8Array(an.frequencyBinCount);
+  } catch (e) { an = null; gainN = null; }
 
-    photos.push(dataUrl);
+  el.src = src;
+  el.play().catch(() => {});
+  engineOn = true;
+}
+
+function stopSong() {
+  engineOn = false;
+  try { audio.pause(); } catch (_) {}
+}
+
+function burst() {
+  const boy = document.body.classList.contains('boy');
+  const list = boy ? ['⭐','🚀','🎈','🔥'] : ['💖','✨','🌸','🎀'];
+  for (let i = 0; i < 4; i++) {
+    const e = document.createElement('div');
+    e.className = 'pop';
+    e.textContent = list[i % list.length];
+    e.style.left = (8 + Math.random() * 84) + 'vw';
+    e.style.bottom = (6 + Math.random() * 16) + 'vh';
+    e.style.fontSize = (26 + Math.random() * 22) + 'px';
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), 1800);
   }
+}
 
-  event.target.value = '';
-  renderPhotoPreview();
-});
+function fire(t) {
+  lastBeat = t; beat.n++; pulse = 1;
+  if (beat.n % 4 === 0) burst();
+}
 
-/* Show uploaded pictures and allow removal */
-function renderPhotoPreview() {
-  const gallery = $('photo-preview');
-  gallery.innerHTML = '';
+function tick(t) {
+  requestAnimationFrame(tick);
+  if (engineOn) {
+    let e = 0;
+    if (an) {
+      an.getByteFrequencyData(data);
+      let s = 0;
+      for (let i = 1; i <= 6; i++) s += data[i];     // bass bins
+      e = s / 6 / 255;
+    }
+    if (e > 0.02) lastSound = t;
+    hist.push(e); if (hist.length > 45) hist.shift();
+    const avg = hist.reduce((a, b) => a + b, 0) / hist.length;
+    const live = an && (t - lastSound < 2000) && !audio.paused;
+    if (live) {
+      if (e > 0.25 && e > avg * 1.2 && t - lastBeat > 280) fire(t);
+    } else if (t - lastBeat > 60000 / curBpm) {
+      fire(t);                                        // fallback steady tempo
+    }
+  }
+  pulse *= 0.9;
+  document.documentElement.style.setProperty('--p', pulse.toFixed(3));
+}
+requestAnimationFrame(tick);
 
-  photos.forEach((photo, index) => {
-    const item = document.createElement('div');
-    item.className = 'photo-item';
-
-    const img = document.createElement('img');
-    img.src = photo;
-    img.alt = 'Memory photo ' + (index + 1);
-
-    const remove = document.createElement('button');
-    remove.className = 'remove-photo';
-    remove.type = 'button';
-    remove.textContent = '×';
-    remove.setAttribute('aria-label', 'Remove photo');
-
-    remove.onclick = () => {
-      photos.splice(index, 1);
-      renderPhotoPreview();
-    };
-
-    item.append(img, remove);
-    gallery.appendChild(item);
+function waitBeats(n, minMs, maxMs, my) {
+  return new Promise(res => {
+    const start = performance.now(), b0 = beat.n;
+    const iv = setInterval(() => {
+      const el = performance.now() - start;
+      if (my !== runToken || (beat.n - b0 >= n && el >= minMs) || el >= maxMs) {
+        clearInterval(iv); res();
+      }
+    }, 40);
   });
 }
 
-/* Background decorations */
+/* ---------- Songs (sender side) ---------- */
+SONGS.forEach((s, i) => {
+  const o = document.createElement('option');
+  o.value = i; o.textContent = '🎵 ' + s.name;
+  $('song').appendChild(o);
+});
+const co = document.createElement('option');
+co.value = 'custom'; co.textContent = '⬆️ Upload my own song';
+$('song').appendChild(co);
+
+function setPrev() {
+  const custom = $('song').value === 'custom';
+  $('songFile').style.display = custom ? 'block' : 'none';
+  $('songPrev').src = custom ? (customSong ? customSong.url : '') : SONGS[$('song').value].src;
+}
+$('song').onchange = setPrev;
+$('songFile').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (customSong) URL.revokeObjectURL(customSong.url);
+  customSong = { file: f, url: URL.createObjectURL(f) };
+  $('songPrev').src = customSong.url;
+};
+setPrev();
+
+/* ---------- Photos: resize, unlimited, reorderable ---------- */
+function resize(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const sc = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * sc);
+      c.height = Math.round(img.height * sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? resolve(b) : reject(), 'image/jpeg', 0.8);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+$('photos').addEventListener('change', async e => {
+  for (const f of Array.from(e.target.files)) {
+    if (!f.type.startsWith('image/')) continue;
+    try {
+      const blob = await resize(f);
+      photos.push({ blob, url: URL.createObjectURL(blob) });
+      renderPhotoPreview();
+    } catch (_) {}
+  }
+  e.target.value = '';
+});
+
+function renderPhotoPreview() {
+  const g = $('photo-preview');
+  g.innerHTML = '';
+  photos.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+
+    const im = document.createElement('img');
+    im.src = p.url; im.alt = 'Photo ' + (i + 1);
+
+    const rm = document.createElement('button');
+    rm.className = 'remove-photo'; rm.type = 'button'; rm.textContent = '×';
+    rm.setAttribute('aria-label', 'Remove photo');
+    rm.onclick = () => { URL.revokeObjectURL(p.url); photos.splice(i, 1); renderPhotoPreview(); };
+
+    const mv = document.createElement('button');
+    mv.className = 'remove-photo'; mv.type = 'button'; mv.textContent = '◀';
+    mv.style.cssText = 'left:5px;right:auto;color:#333;font-size:13px';
+    if (i === 0) mv.style.display = 'none';
+    mv.setAttribute('aria-label', 'Move photo earlier');
+    mv.onclick = () => { [photos[i - 1], photos[i]] = [photos[i], photos[i - 1]]; renderPhotoPreview(); };
+
+    const no = document.createElement('span');
+    no.textContent = i + 1;
+    no.style.cssText = 'position:absolute;bottom:6px;left:8px;color:#fff;font-weight:800;text-shadow:0 1px 4px #000';
+
+    item.append(im, rm, mv, no);
+    g.appendChild(item);
+  });
+}
+
+/* ---------- Background decorations ---------- */
 function deco(g) {
   if (g === lastG) return;
   lastG = g;
-  const box = $('deco');
-  box.innerHTML = '';
-
+  const box = $('deco'); box.innerHTML = '';
   const items = g === 'boy'
     ? ['🚗','🏎️','🚙','🚚','🏍️','✈️','🚁','🚜','🚓','🚀','🚒','🛵']
     : ['👜','👠','💄','🌹','🦋','🧁','💍','🌷','🎀','👗','💅','🌸','🪞','🧴','👑','💐'];
-
   for (let i = 0; i < 22; i++) {
     const s = document.createElement('span');
     s.textContent = items[i % items.length];
@@ -343,122 +421,157 @@ function deco(g) {
     s.style.animationDuration = (5 + Math.random() * 4) + 's';
     box.appendChild(s);
   }
-
   if (g === 'boy') {
-    const road = document.createElement('div');
-    road.className = 'road';
-    box.appendChild(road);
-
+    const road = document.createElement('div'); road.className = 'road'; box.appendChild(road);
     ['🚗','🏎️','🚚'].forEach((v, i) => {
       const d = document.createElement('span');
-      d.className = 'drive';
-      d.textContent = v;
-      d.style.animationDelay = (-i * 4) + 's';
+      d.className = 'drive'; d.textContent = v; d.style.animationDelay = (-i * 4) + 's';
       box.appendChild(d);
     });
   }
 }
+function theme(g) { document.body.className = g === 'boy' ? 'boy' : ''; deco(g); }
 
-function theme(g) {
-  document.body.className = g === 'boy' ? 'boy' : '';
-  deco(g);
-}
-
-document.querySelectorAll('#gender .opt').forEach(button => {
-  button.onclick = () => {
+document.querySelectorAll('#gender .opt').forEach(b => {
+  b.onclick = () => {
     document.querySelectorAll('#gender .opt').forEach(x => x.classList.remove('on'));
-    button.classList.add('on');
-    G = button.dataset.v;
-    theme(G);
+    b.classList.add('on'); G = b.dataset.v; theme(G);
   };
 });
-
 theme(G);
 
-/* Encode and decode shared birthday data */
-const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
-const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
-
-function data() {
-  return {
-    g: G,
-    n: $('name').value.trim() || 'Friend',
-    m: $('msg').value.trim(),
-    f: $('from').value.trim(),
-    photos: photos
-  };
+/* ---------- Helpers ---------- */
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
-
-function link() {
-  return location.href.split('#')[0] + '#' + enc(data());
+function cleanPhone(v) {
+  let n = v.replace(/\D/g, '');
+  if (n.startsWith('00')) n = n.slice(2);
+  if (n.startsWith('0')) n = '254' + n.slice(1);
+  else if (n.length === 9 && /^[71]/.test(n)) n = '254' + n;
+  return n;
 }
+const formData = () => ({
+  g: G,
+  n: $('name').value.trim() || 'Friend',
+  m: $('msg').value.trim(),
+  f: $('from').value.trim(),
+  s: $('song').value === 'custom' ? -1 : +$('song').value
+});
 
-/* WhatsApp sharing */
-$('send').onclick = () => {
-  const num = $('phone').value.replace(/\D/g, '');
+/* ---------- Upload to Cloudinary, return short link ---------- */
+async function makeLink() {
+  const d = formData();
+  const q = { g: d.g, n: d.n, m: d.m, f: d.f, s: d.s };
 
-  if (!num) {
-    $('note').textContent = 'Add their WhatsApp number first 🙂';
-    return;
+  if (d.s === -1) {
+    if (!customSong) throw new Error('Choose a song file first');
+    $('note').textContent = 'Uploading song…';
+    const fd = new FormData();
+    fd.append('file', customSong.file);
+    fd.append('upload_preset', PRESET);
+    const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`, { method: 'POST', body: fd });
+    if (!r.ok) throw new Error('Song upload failed');
+    q.a = (await r.json()).secure_url;
   }
 
-  const shareLink = link();
-
-  if (shareLink.length > 18000) {
-    $('note').textContent =
-      'The link is too large. Remove some photos and try again.';
-    return;
+  if (photos.length) {
+    const id = 'bd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    let done = 0, next = 0;
+    const upOne = async (p, i) => {
+      const fd = new FormData();
+      fd.append('file', p.blob);
+      fd.append('upload_preset', PRESET);
+      fd.append('tags', id);
+      fd.append('public_id', id + '_' + String(i).padStart(5, '0'));
+      const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
+      if (!r.ok) throw new Error('Upload failed');
+      done++;
+      $('note').textContent = `Uploading photos ${done}/${photos.length}…`;
+    };
+    const worker = async () => { while (next < photos.length) { const i = next++; await upOne(photos[i], i); } };
+    await Promise.all([worker(), worker(), worker()]);
+    q.i = id;
   }
 
-  const message =
-    '🎂 A birthday surprise for you, ' +
-    data().n +
-    '! Open this 👇\n' +
-    shareLink;
+  return location.origin + location.pathname + '?' + new URLSearchParams(q);
+}
 
-  const whatsappUrl =
-    'https://wa.me/' + num + '?text=' +
-    encodeURIComponent(message);
+/* ---------- Send / Copy / Preview ---------- */
+$('send').onclick = async () => {
+  const num = cleanPhone($('phone').value);
+  if (num.length < 11) { $('note').textContent = 'Enter a valid WhatsApp number 🙂'; return; }
 
-  window.location.href = whatsappUrl;
-};
+  const old = $('wa-go'); if (old) old.remove();
+  $('send').disabled = true;
+  $('note').textContent = 'Preparing your surprise…';
 
-/* Copy link */
-$('copy').onclick = async () => {
-  const shareLink = link();
-
+  let link;
   try {
-    await navigator.clipboard.writeText(shareLink);
-    $('note').textContent = shareLink.length > 18000
-      ? 'Link copied, but it may be too large to share reliably. Try fewer/smaller photos.'
-      : 'Link copied! Paste it anywhere 💕';
+    link = await makeLink();
   } catch (e) {
-    $('note').textContent = shareLink;
+    console.error(e);
+    $('note').textContent = 'Upload failed. Check your Cloudinary cloud name and preset, and that the page is on https.';
+    $('send').disabled = false;
+    return;
   }
+
+  const text = '🎂 A birthday surprise for you, ' + formData().n + '! Open this 👇\n' + link;
+  const url = 'https://api.whatsapp.com/send?phone=' + num + '&text=' + encodeURIComponent(text);
+
+  const a = document.createElement('a');
+  a.id = 'wa-go';
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.className = 'btn alt';
+  a.style.textAlign = 'center';
+  a.style.textDecoration = 'none';
+  a.textContent = '✅ Ready! Tap to open WhatsApp';
+  $('send').insertAdjacentElement('afterend', a);
+
+  $('note').textContent = 'Tap the green button above to send.';
+  $('send').disabled = false;
 };
 
-/* Preview birthday page */
+$('copy').onclick = async () => {
+  $('copy').disabled = true;
+  try {
+    const link = await makeLink();
+    try { await navigator.clipboard.writeText(link); $('note').textContent = 'Link copied! Paste it anywhere 💕'; }
+    catch (_) { $('note').textContent = link; }
+  } catch (e) {
+    console.error(e);
+    $('note').textContent = 'Upload failed. Check your Cloudinary settings.';
+  }
+  $('copy').disabled = false;
+};
+
 $('prev').onclick = () => {
-  history.replaceState(null, '', '#' + enc(data()));
-  show(data(), true);
+  const d = formData();
+  d.images = photos.map(p => p.url);
+  if (d.s === -1) {
+    if (!customSong) { $('note').textContent = 'Choose a song file first 🎵'; return; }
+    d.a = customSong.url;
+  }
+  show(d, true);
 };
 
-/* Return to editor */
 $('back').onclick = () => {
-  history.replaceState(null, '', location.pathname + location.search);
+  runToken++;
+  stopSong();
   $('rcv').classList.add('hide');
   $('back').classList.add('hide');
   $('sender').classList.remove('hide');
   theme(G);
-  document.querySelectorAll('.fall,.rise').forEach(e => e.remove());
+  document.querySelectorAll('.fall,.rise,.pop,.stage,.gate').forEach(e => e.remove());
 };
 
-/* Falling and rising decorations */
+/* ---------- Confetti ---------- */
 function rain(list, n, cls, dur) {
   for (let i = 0; i < n; i++) {
     const e = document.createElement('div');
-    e.className = cls;
-    e.textContent = list[i % list.length];
+    e.className = cls; e.textContent = list[i % list.length];
     e.style.left = Math.random() * 100 + 'vw';
     e.style.fontSize = (18 + Math.random() * 22) + 'px';
     e.style.animationDuration = (dur + Math.random() * dur) + 's';
@@ -467,63 +580,120 @@ function rain(list, n, cls, dur) {
     setTimeout(() => e.remove(), (dur * 2 + 3) * 1000);
   }
 }
-
 const GIRL = ['🌸','💖','🦄','🎀','🧸','✨','🍭','🌈'];
-const BOY = ['⭐','🚀','⚽','🦖','🎮','🏎️','🔥','🎈'];
+const BOY  = ['⭐','🚀','⚽','🦖','🎮','🏎️','🔥','🎈'];
 
-function esc(s) {
-  return String(s).replace(/[&<>"]/g, c => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
-  }[c]));
-}
-
-/* Render birthday page and memories */
-function show(d, preview) {
-  theme(d.g);
-  const boy = d.g === 'boy';
-  const r = $('rcv');
-
-  $('sender').classList.add('hide');
+/* ---------- Receiver: finale card ---------- */
+function finale(d) {
+  const boy = d.g === 'boy', r = $('rcv');
   r.classList.remove('hide');
-  $('back').classList.toggle('hide', !preview);
-
-  const gallery = (Array.isArray(d.photos) ? d.photos : [])
-    .filter(photo => typeof photo === 'string' && photo.startsWith('data:image/'))
-    .map((photo, index) =>
-      `<img src="${photo}" alt="Memory ${index + 1}" loading="lazy">`
-    )
-    .join('');
-
   r.innerHTML = `
     <div class="big">${boy ? '🎂' : '🧁'}</div>
     <h2>Happy Birthday, ${esc(d.n)}!</h2>
-    <p>${boy
-      ? 'Hope your day is epic, champ! 🚀'
-      : 'Hope your day is magical and full of sparkles! ✨'
-    }</p>
+    <p>${boy ? 'Hope your day is epic, champ! 🚀' : 'Hope your day is magical and full of sparkles! ✨'}</p>
     ${d.m ? `<p>“${esc(d.m)}”</p>` : ''}
     ${d.f ? `<p>— with love, ${esc(d.f)} ${boy ? '🤜' : '💕'}</p>` : ''}
-    ${gallery ? `
-      <h2>📸 Our Memories</h2>
-      <div class="memory-gallery">${gallery}</div>
-    ` : ''}
-  `;
-
+    ${d.images && d.images.length ? `<button class="btn" id="replay" style="max-width:260px">▶ Replay memories</button>` : ''}`;
   rain(boy ? BOY : GIRL, 14, 'rise', 7);
   setTimeout(() => rain(['🎉','🎊','✨','💥','⭐'], 30, 'fall', 3), 400);
+  const rp = $('replay');
+  if (rp) rp.onclick = () => { audio.currentTime = 0; audio.play().catch(() => {}); slideshow(d); };
 }
 
-/* Open a shared birthday link */
-if (location.hash.length > 2) {
-  try {
-    show(dec(location.hash.slice(1)), false);
-  } catch (e) {
-    console.error('Could not load birthday link:', e);
+/* ---------- Receiver: slideshow (changes on the beat) ---------- */
+async function slideshow(d) {
+  const my = ++runToken;
+  document.querySelectorAll('.stage').forEach(e => e.remove());
+  const stage = document.createElement('div');
+  stage.className = 'stage';
+  stage.innerHTML = `<div class="flash"></div><div class="bar"><i></i></div>
+    <button class="ctrl" id="mute">${muted ? '🔇' : '🔊'}</button><div class="cap"></div>`;
+  document.body.appendChild(stage);
+  const fill = stage.querySelector('.bar i'), cap = stage.querySelector('.cap');
+  $('mute').onclick = () => { muted = !muted; applyMute(); $('mute').textContent = muted ? '🔇' : '🔊'; };
+
+  const imgs = d.images, total = imgs.length;
+
+  cap.style.cssText = 'top:40%;bottom:auto;font-size:2rem';
+  cap.textContent = `🎉 Happy Birthday, ${d.n}! 🎉`;
+  await sleep(2500); if (my !== runToken) return;
+  cap.style.cssText = ''; cap.textContent = '';
+
+  for (let i = 0; i < total; i++) {
+    if (my !== runToken) return;
+    const s = document.createElement('div');
+    s.className = 'slide';
+    s.innerHTML = `<div class="bg" style="background-image:url('${imgs[i]}')"></div>
+      <div class="pz"><img src="${imgs[i]}" class="kb${i % 4}" style="--d:${MAX_MS / 1000}s" alt=""></div>`;
+    stage.appendChild(s);
+    if (imgs[i + 1]) new Image().src = imgs[i + 1];   // preload next
+    await sleep(60);
+    s.classList.add('on');
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    cap.textContent = (i + 1) + ' / ' + total;
+
+    await waitBeats(BEATS_PER_SLIDE, MIN_MS, MAX_MS, my);
+    if (my !== runToken) return;
+    const old = stage.querySelectorAll('.slide');
+    if (old.length > 2) old[0].remove();
+    s.classList.remove('on');
+    setTimeout(() => s.remove(), 1200);
   }
+  if (my !== runToken) return;
+  stage.remove();
+  finale(d);
 }
+
+/* ---------- Show page (preview) ---------- */
+function show(d, preview) {
+  theme(d.g);
+  $('sender').classList.add('hide');
+  $('back').classList.toggle('hide', !preview);
+  muted = false;
+  playSong(songSrc(d), songBpm(d));
+  if (d.images && d.images.length) slideshow(d);
+  else finale(d);
+}
+
+/* ---------- Open a shared link (receiver) ---------- */
+(function init() {
+  const p = new URLSearchParams(location.search);
+  if (!p.has('g') || !p.has('n')) return;
+  const d = {
+    g: p.get('g'), n: p.get('n'), m: p.get('m') || '', f: p.get('f') || '',
+    s: +p.get('s') || 0, a: p.get('a') || '', images: []
+  };
+  const id = p.get('i');
+  theme(d.g);
+  $('sender').classList.add('hide');
+
+  const gate = document.createElement('div');
+  gate.className = 'gate';
+  gate.innerHTML = `<div class="big">🎁</div>
+    <h2 style="color:var(--main);font-size:2rem;margin:8px 0">A surprise for ${esc(d.n)}</h2>
+    <button class="btn" id="open" style="max-width:260px">Tap to open 💖</button>
+    <p class="small" id="gnote"></p>`;
+  document.body.appendChild(gate);
+
+  $('open').onclick = async () => {
+    $('open').disabled = true; $('gnote').textContent = 'Loading memories…';
+    // start music inside the tap (browsers require this)
+    muted = false;
+    playSong(songSrc(d), songBpm(d));
+    if (id) {
+      try {
+        const r = await fetch(`https://res.cloudinary.com/${CLOUD}/image/list/${id}.json?t=${Date.now()}`);
+        const j = await r.json();
+        d.images = j.resources
+          .sort((a, b) => a.public_id.localeCompare(b.public_id))
+          .map(x => `https://res.cloudinary.com/${CLOUD}/image/upload/f_auto,q_auto,w_1400/v${x.version}/${x.public_id}.${x.format}`);
+      } catch (e) { console.error(e); }
+    }
+    gate.remove();
+    $('back').classList.add('hide');
+    if (d.images.length) slideshow(d); else finale(d);
+  };
+})();
 </script>
 </body>
 </html>
