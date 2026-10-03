@@ -36,6 +36,7 @@ input, textarea, select {
   width: 100%; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--bg2);
   font: inherit; font-size: 1rem; background: #fff; color: #222;
 }
+.sr { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
 .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .opt {
   padding: 12px 8px; border-radius: 14px; border: 2px solid var(--bg2); background: #fff;
@@ -50,7 +51,8 @@ input, textarea, select {
 .btn.ghost { background: #fff; color: var(--main); border: 2px solid var(--main); }
 .btn:disabled { opacity: .6; }
 .hide { display: none !important; }
-.small { font-size: .85rem; opacity: .7; margin-top: 6px; }
+.small { font-size: .85rem; opacity: .75; margin-top: 6px; word-break: break-word; }
+.err { color: #c00; opacity: 1; font-weight: 800; }
 
 /* Photo uploader preview */
 .photo-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
@@ -152,8 +154,13 @@ input, textarea, select {
 
     <label for="song">🎵 Choose a song</label>
     <select id="song"></select>
-    <input id="songFile" type="file" accept="audio/*" style="display:none;margin-top:8px">
-    <p class="small">Pick a preset, or choose "Upload my own song". Keep it under 10 MB.</p>
+
+    <div id="songUp" class="hide">
+      <button type="button" class="btn ghost" id="songBtn">📂 Choose song from my phone</button>
+      <input id="songFile" class="sr" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus">
+      <p class="small" id="songInfo">No song chosen yet. Max 10 MB.</p>
+    </div>
+
     <audio id="songPrev" controls style="width:100%;margin-top:8px"></audio>
 
     <label for="name">Their name</label>
@@ -190,6 +197,7 @@ const SONGS = [
 const BEATS_PER_SLIDE = 8;   // slide changes after this many beats
 const MIN_MS = 3500;         // but never faster than this
 const MAX_MS = 9000;         // and never slower than this
+const MAX_SONG_MB = 10;      // Cloudinary free limit for song files
 /* ================================= */
 
 const $ = id => document.getElementById(id);
@@ -223,7 +231,7 @@ function playSong(src, bpm) {
 
   const el = new Audio();
   el.loop = true;
-  el.crossOrigin = 'anonymous';   // needed so the analyser can read the song
+  if (!src.startsWith('blob:')) el.crossOrigin = 'anonymous';   // lets the analyser read online songs
   audio = el; an = null; gainN = null;
 
   let fell = false;
@@ -323,20 +331,48 @@ SONGS.forEach((s, i) => {
   $('song').appendChild(o);
 });
 const co = document.createElement('option');
-co.value = 'custom'; co.textContent = '⬆️ Upload my own song';
+co.value = 'custom'; co.textContent = '📂 Upload my own song from phone';
 $('song').appendChild(co);
+
+function fmtMB(b) { return (b / 1048576).toFixed(1) + ' MB'; }
 
 function setPrev() {
   const custom = $('song').value === 'custom';
-  $('songFile').style.display = custom ? 'block' : 'none';
+  $('songUp').classList.toggle('hide', !custom);
   $('songPrev').src = custom ? (customSong ? customSong.url : '') : SONGS[$('song').value].src;
 }
-$('song').onchange = setPrev;
+
+$('song').onchange = () => {
+  setPrev();
+  // open the phone's file picker straight away (this is a tap, so it is allowed)
+  if ($('song').value === 'custom' && !customSong) {
+    try { $('songFile').click(); } catch (_) {}
+  }
+};
+
+$('songBtn').onclick = () => $('songFile').click();
+
 $('songFile').onchange = e => {
-  const f = e.target.files[0];
+  const f = e.target.files && e.target.files[0];
+  e.target.value = '';
   if (!f) return;
+
+  const looksAudio = (f.type && f.type.startsWith('audio/')) || /\.(mp3|m4a|aac|wav|ogg|opus|flac|mp4)$/i.test(f.name);
+  if (!looksAudio) {
+    $('songInfo').className = 'small err';
+    $('songInfo').textContent = '❌ That is not an audio file. Pick an MP3 or M4A.';
+    return;
+  }
+  if (f.size > MAX_SONG_MB * 1048576) {
+    $('songInfo').className = 'small err';
+    $('songInfo').textContent = `❌ Too big (${fmtMB(f.size)}). Pick a song under ${MAX_SONG_MB} MB.`;
+    return;
+  }
+
   if (customSong) URL.revokeObjectURL(customSong.url);
   customSong = { file: f, url: URL.createObjectURL(f) };
+  $('songInfo').className = 'small';
+  $('songInfo').textContent = `✅ ${f.name} (${fmtMB(f.size)}). It uploads when you tap Send.`;
   $('songPrev').src = customSong.url;
 };
 setPrev();
@@ -459,22 +495,39 @@ const formData = () => ({
   s: $('song').value === 'custom' ? -1 : +$('song').value
 });
 
-/* ---------- Upload to Cloudinary, return short link ---------- */
+/* ---------- Cloudinary upload (shows the real error) ---------- */
+async function cloudUpload(kind, fd) {
+  if (/^YOUR_/.test(CLOUD) || /^YOUR_/.test(PRESET)) {
+    throw new Error('CLOUD and PRESET at the top of the script are still placeholders');
+  }
+  let r;
+  try {
+    r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/${kind}/upload`, { method: 'POST', body: fd });
+  } catch (e) {
+    throw new Error('Failed to fetch (offline, blocked, or wrong cloud name)');
+  }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+  return j;
+}
+
 async function makeLink() {
   const d = formData();
   const q = { g: d.g, n: d.n, m: d.m, f: d.f, s: d.s };
 
+  // 1) the sender's own song (audio goes through Cloudinary's "video" endpoint)
   if (d.s === -1) {
-    if (!customSong) throw new Error('Choose a song file first');
-    $('note').textContent = 'Uploading song…';
+    if (!customSong) throw new Error('Tap "Choose song from my phone" and pick a song first');
+    $('note').className = 'small';
+    $('note').textContent = `Uploading song (${fmtMB(customSong.file.size)})…`;
     const fd = new FormData();
     fd.append('file', customSong.file);
     fd.append('upload_preset', PRESET);
-    const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`, { method: 'POST', body: fd });
-    if (!r.ok) throw new Error('Song upload failed');
-    q.a = (await r.json()).secure_url;
+    const j = await cloudUpload('video', fd);
+    q.a = j.secure_url;
   }
 
+  // 2) photos
   if (photos.length) {
     const id = 'bd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     let done = 0, next = 0;
@@ -484,8 +537,7 @@ async function makeLink() {
       fd.append('upload_preset', PRESET);
       fd.append('tags', id);
       fd.append('public_id', id + '_' + String(i).padStart(5, '0'));
-      const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
-      if (!r.ok) throw new Error('Upload failed');
+      await cloudUpload('image', fd);
       done++;
       $('note').textContent = `Uploading photos ${done}/${photos.length}…`;
     };
@@ -500,6 +552,7 @@ async function makeLink() {
 /* ---------- Send / Copy / Preview ---------- */
 $('send').onclick = async () => {
   const num = cleanPhone($('phone').value);
+  $('note').className = 'small';
   if (num.length < 11) { $('note').textContent = 'Enter a valid WhatsApp number 🙂'; return; }
 
   const old = $('wa-go'); if (old) old.remove();
@@ -511,7 +564,8 @@ $('send').onclick = async () => {
     link = await makeLink();
   } catch (e) {
     console.error(e);
-    $('note').textContent = 'Upload failed. Check your Cloudinary cloud name and preset, and that the page is on https.';
+    $('note').className = 'small err';
+    $('note').textContent = 'Upload failed: ' + e.message;
     $('send').disabled = false;
     return;
   }
@@ -536,13 +590,16 @@ $('send').onclick = async () => {
 
 $('copy').onclick = async () => {
   $('copy').disabled = true;
+  $('note').className = 'small';
+  $('note').textContent = 'Preparing your surprise…';
   try {
     const link = await makeLink();
     try { await navigator.clipboard.writeText(link); $('note').textContent = 'Link copied! Paste it anywhere 💕'; }
     catch (_) { $('note').textContent = link; }
   } catch (e) {
     console.error(e);
-    $('note').textContent = 'Upload failed. Check your Cloudinary settings.';
+    $('note').className = 'small err';
+    $('note').textContent = 'Upload failed: ' + e.message;
   }
   $('copy').disabled = false;
 };
@@ -551,7 +608,11 @@ $('prev').onclick = () => {
   const d = formData();
   d.images = photos.map(p => p.url);
   if (d.s === -1) {
-    if (!customSong) { $('note').textContent = 'Choose a song file first 🎵'; return; }
+    if (!customSong) {
+      $('note').className = 'small err';
+      $('note').textContent = 'Tap "Choose song from my phone" and pick a song first 🎵';
+      return;
+    }
     d.a = customSong.url;
   }
   show(d, true);
